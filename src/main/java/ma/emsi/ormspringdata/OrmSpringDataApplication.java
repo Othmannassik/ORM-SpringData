@@ -23,5 +23,28 @@ public class OrmSpringDataApplication implements CommandLineRunner {
         patient.save(new Patient(null,"aya",new Date(), false, 56));
         patient.save(new Patient(null,"akram",new Date(), false, 87));
         patient.save(new Patient(null,"hatim",new Date(), false, 29));
+
+        // Consulter tous les patients
+        System.out.println("**************Liste Des Patients****************");
+        patient.findAll().forEach(System.out::println);
+
+        System.out.println("**************Patient avec l'Id 1 ***************");
+        // Consulter un patient
+        System.out.println(patient.findById(1L));
+
+        System.out.println("**************Maj le Patient avec l'Id 2 ***************");
+        // Mettre à jour un patient
+        Patient p = patient.findById(2L).orElse(null);
+        if (p != null)
+        {
+            p.setNom("ayaaaa");
+            patient.save(p);
+            System.out.println(patient.findById(2L));
+        }
+
+        System.out.println("**************Supprimer le Patient avec l'Id 3 ***************");
+        // supprimer un patient
+        patient.deleteById(3L);
+        patient.findAll().forEach(System.out::println);
     }
 }
