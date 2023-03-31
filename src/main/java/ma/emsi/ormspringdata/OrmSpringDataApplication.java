@@ -2,6 +2,7 @@ package ma.emsi.ormspringdata;
 
 import ma.emsi.ormspringdata.entities.Patient;
 import ma.emsi.ormspringdata.repositories.PatientRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -10,6 +11,7 @@ import java.util.Date;
 
 @SpringBootApplication
 public class OrmSpringDataApplication implements CommandLineRunner {
+    @Autowired
     private PatientRepository patient;
     public static void main(String[] args) {
         SpringApplication.run(OrmSpringDataApplication.class, args);
