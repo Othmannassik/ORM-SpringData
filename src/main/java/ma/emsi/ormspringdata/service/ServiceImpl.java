@@ -49,4 +49,9 @@ public class ServiceImpl implements IService{
     public Medecin ChercherMedecinParNom(String nom) {
         return medecinRepository.findByNom(nom);
     }
+
+    @Override
+    public RendezVous ChercherRendezVousParId(Long id) {
+        return rendezVousRepository.findById(id).orElse(null);
+    }
 }

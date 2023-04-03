@@ -13,4 +13,6 @@ public interface IService {
 
     Patient ChercherPatientParNom(String nom);
     Medecin ChercherMedecinParNom(String nom);
+
+    RendezVous ChercherRendezVousParId(Long id);
 }

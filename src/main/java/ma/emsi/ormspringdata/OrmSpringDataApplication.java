@@ -5,6 +5,7 @@ import ma.emsi.ormspringdata.repositories.ConsultationRepository;
 import ma.emsi.ormspringdata.repositories.MedecinRepository;
 import ma.emsi.ormspringdata.repositories.PatientRepository;
 import ma.emsi.ormspringdata.repositories.RendezVousRepository;
+import ma.emsi.ormspringdata.service.IService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -23,10 +24,7 @@ public class OrmSpringDataApplication {
     }
 
     @Bean
-    CommandLineRunner start(PatientRepository patientRepository,
-                            MedecinRepository medecinRepository,
-                            RendezVousRepository rendezVousRepository,
-                            ConsultationRepository consultationRepository){
+    CommandLineRunner start(IService service){
         return args -> {
             Stream.of("Amine","Hamid","Ahlam","Douaa")
                     .forEach(nom -> {
@@ -35,7 +33,7 @@ public class OrmSpringDataApplication {
                         p.setDateNaissance(new Date());
                         p.setMalade(Math.random()>0.5 ? true : false);
                         p.setScore(387);
-                        patientRepository.save(p);
+                        service.savePatient(p);
                     });
 
             Stream.of("Ahmed","Aya","Imane","Imad")
@@ -44,26 +42,26 @@ public class OrmSpringDataApplication {
                         m.setNom(nom);
                         m.setEmail(nom + "@gmail.com");
                         m.setSpecialite(Math.random()>0.5 ? "Dentiste" : "Orthophoniste");
-                        medecinRepository.save(m);
+                        service.saveMedecin(m);
                     });
 
-            Patient patient = patientRepository.findByNom("Douaa");
-            Medecin medecin = medecinRepository.findByNom("Aya");
+            Patient patient = service.ChercherPatientParNom("Douaa");
+            Medecin medecin = service.ChercherMedecinParNom("Aya");
 
             RendezVous rendezVous = new RendezVous();
             rendezVous.setDate(new Date());
-            rendezVous.setStatusRdv(StatusRdv.PENDING);
+            rendezVous.setStatusRdv(Math.random()>0.5 ? StatusRdv.PENDING : StatusRdv.CANCELED);
             rendezVous.setPatient(patient);
             rendezVous.setMedecin(medecin);
-            rendezVousRepository.save(rendezVous);
+            service.saveRendezVous(rendezVous);
 
-            RendezVous rendezVous1 = rendezVousRepository.findById(1L).orElse(null);
+            RendezVous rendezVous1 = service.ChercherRendezVousParId(1L);
 
             Consultation consultation = new Consultation();
             consultation.setDate(new Date());
             consultation.setRapport("This is a rapport");
             consultation.setRendezVous(rendezVous1);
-            consultationRepository.save(consultation);
+            service.saveConsultation(consultation);
         };
     }
 }
