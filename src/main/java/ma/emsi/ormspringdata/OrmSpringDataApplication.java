@@ -1,50 +1,69 @@
 package ma.emsi.ormspringdata;
 
-import ma.emsi.ormspringdata.entities.Patient;
+import ma.emsi.ormspringdata.entities.*;
+import ma.emsi.ormspringdata.repositories.ConsultationRepository;
+import ma.emsi.ormspringdata.repositories.MedecinRepository;
 import ma.emsi.ormspringdata.repositories.PatientRepository;
+import ma.emsi.ormspringdata.repositories.RendezVousRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 
 import java.util.Date;
+import java.util.stream.Stream;
 
 @SpringBootApplication
-public class OrmSpringDataApplication implements CommandLineRunner {
+public class OrmSpringDataApplication {
     @Autowired
     private PatientRepository patient;
     public static void main(String[] args) {
         SpringApplication.run(OrmSpringDataApplication.class, args);
     }
 
-    @Override
-    public void run(String... args) throws Exception {
-        patient.save(new Patient(null,"othman",new Date(), true, 198));
-        patient.save(new Patient(null,"aya",new Date(), false, 56));
-        patient.save(new Patient(null,"akram",new Date(), false, 87));
-        patient.save(new Patient(null,"hatim",new Date(), false, 29));
+    @Bean
+    CommandLineRunner start(PatientRepository patientRepository,
+                            MedecinRepository medecinRepository,
+                            RendezVousRepository rendezVousRepository,
+                            ConsultationRepository consultationRepository){
+        return args -> {
+            Stream.of("Amine","Hamid","Ahlam","Douaa")
+                    .forEach(nom -> {
+                        Patient p = new Patient();
+                        p.setNom(nom);
+                        p.setDateNaissance(new Date());
+                        p.setMalade(Math.random()>0.5 ? true : false);
+                        p.setScore(387);
+                        patientRepository.save(p);
+                    });
 
-        // Consulter tous les patients
-        System.out.println("**************Liste Des Patients****************");
-        patient.findAll().forEach(System.out::println);
+            Stream.of("Ahmed","Aya","Imane","Imad")
+                    .forEach(nom -> {
+                        Medecin m = new Medecin();
+                        m.setNom(nom);
+                        m.setEmail(nom + "@gmail.com");
+                        m.setSpecialite(Math.random()>0.5 ? "Dentiste" : "Orthophoniste");
+                        medecinRepository.save(m);
+                    });
 
-        System.out.println("**************Patient avec l'Id 1 ***************");
-        // Consulter un patient
-        System.out.println(patient.findById(1L));
+            Patient patient = patientRepository.findByNom("Douaa");
+            Medecin medecin = medecinRepository.findByNom("Aya");
 
-        System.out.println("**************Maj le Patient avec l'Id 2 ***************");
-        // Mettre à jour un patient
-        Patient p = patient.findById(2L).orElse(null);
-        if (p != null)
-        {
-            p.setNom("ayaaaa");
-            patient.save(p);
-            System.out.println(patient.findById(2L));
-        }
+            RendezVous rendezVous = new RendezVous();
+            rendezVous.setDate(new Date());
+            rendezVous.setStatusRdv(StatusRdv.PENDING);
+            rendezVous.setPatient(patient);
+            rendezVous.setMedecin(medecin);
+            rendezVousRepository.save(rendezVous);
 
-        System.out.println("**************Supprimer le Patient avec l'Id 3 ***************");
-        // supprimer un patient
-        patient.deleteById(3L);
-        patient.findAll().forEach(System.out::println);
+            RendezVous rendezVous1 = rendezVousRepository.findById(1L).orElse(null);
+
+            Consultation consultation = new Consultation();
+            consultation.setDate(new Date());
+            consultation.setRapport("This is a rapport");
+            consultation.setRendezVous(rendezVous1);
+            consultationRepository.save(consultation);
+        };
     }
 }
