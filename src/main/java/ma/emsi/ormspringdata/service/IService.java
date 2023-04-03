@@ -1,9 +1,6 @@
 package ma.emsi.ormspringdata.service;
 
-import ma.emsi.ormspringdata.entities.Consultation;
-import ma.emsi.ormspringdata.entities.Medecin;
-import ma.emsi.ormspringdata.entities.Patient;
-import ma.emsi.ormspringdata.entities.RendezVous;
+import ma.emsi.ormspringdata.entities.*;
 
 public interface IService {
     Patient savePatient (Patient patient);
@@ -15,4 +12,10 @@ public interface IService {
     Medecin ChercherMedecinParNom(String nom);
 
     RendezVous ChercherRendezVousParId(Long id);
+
+    User saveUser (User user);
+    Role saveRole (Role role);
+    User ChercherUserParUsername (String username);
+    Role ChercherRoleParRoleName (String rolename);
+    void AjouterRoleToUser (String username, String rolename);
 }

@@ -5,5 +5,5 @@ import ma.emsi.ormspringdata.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface RoleRepository extends JpaRepository<Role, Long> {
-    User findByRoleName (String rolename);
+    Role findByRoleName (String rolename);
 }

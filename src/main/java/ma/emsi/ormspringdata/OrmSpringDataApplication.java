@@ -45,6 +45,21 @@ public class OrmSpringDataApplication {
                         service.saveMedecin(m);
                     });
 
+            Stream.of("user1","user2")
+                    .forEach(username -> {
+                        User user = new User();
+                        user.setUsername(username);
+                        user.setPassword("pass");
+                        service.saveUser(user);
+                    });
+
+            Stream.of("role1","role2")
+                    .forEach(rolename -> {
+                        Role role = new Role();
+                        role.setRoleName(rolename);
+                        service.saveRole(role);
+                    });
+
             Patient patient = service.ChercherPatientParNom("Douaa");
             Medecin medecin = service.ChercherMedecinParNom("Aya");
 
@@ -62,6 +77,9 @@ public class OrmSpringDataApplication {
             consultation.setRapport("This is a rapport");
             consultation.setRendezVous(rendezVous1);
             service.saveConsultation(consultation);
+
+            service.AjouterRoleToUser("user1","role2");
+            service.AjouterRoleToUser("user2","role1");
         };
     }
 }

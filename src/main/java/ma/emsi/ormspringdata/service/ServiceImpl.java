@@ -2,14 +2,8 @@ package ma.emsi.ormspringdata.service;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import ma.emsi.ormspringdata.entities.Consultation;
-import ma.emsi.ormspringdata.entities.Medecin;
-import ma.emsi.ormspringdata.entities.Patient;
-import ma.emsi.ormspringdata.entities.RendezVous;
-import ma.emsi.ormspringdata.repositories.ConsultationRepository;
-import ma.emsi.ormspringdata.repositories.MedecinRepository;
-import ma.emsi.ormspringdata.repositories.PatientRepository;
-import ma.emsi.ormspringdata.repositories.RendezVousRepository;
+import ma.emsi.ormspringdata.entities.*;
+import ma.emsi.ormspringdata.repositories.*;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,6 +14,9 @@ public class ServiceImpl implements IService{
     MedecinRepository medecinRepository;
     RendezVousRepository rendezVousRepository;
     ConsultationRepository consultationRepository;
+    UserRepository userRepository;
+    RoleRepository roleRepository;
+
     @Override
     public Patient savePatient(Patient patient) {
         return patientRepository.save(patient);
@@ -53,5 +50,34 @@ public class ServiceImpl implements IService{
     @Override
     public RendezVous ChercherRendezVousParId(Long id) {
         return rendezVousRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public User saveUser(User user) {
+        return userRepository.save(user);
+    }
+
+    @Override
+    public Role saveRole(Role role) {
+        return roleRepository.save(role);
+    }
+
+    @Override
+    public User ChercherUserParUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
+
+    @Override
+    public Role ChercherRoleParRoleName(String rolename) {
+        return roleRepository.findByRoleName(rolename);
+    }
+
+    @Override
+    public void AjouterRoleToUser(String username, String rolename) {
+        User user=userRepository.findByUsername(username);
+        Role role=roleRepository.findByRoleName(rolename);
+
+        user.getRoles().add(role);
+        role.getUsers().add(user);
     }
 }
